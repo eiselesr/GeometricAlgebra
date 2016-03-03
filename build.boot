@@ -10,4 +10,4 @@
        :version "0.1.0"}
   jar {:manifest {"Foo" "bar"}})
 
-(require '[edu.vu.c3.core :as c3])
+(use '[edu.vu.c3.core])
