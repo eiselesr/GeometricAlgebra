@@ -45,35 +45,38 @@
   track of were things move to in the new list"
   [coll1 coll2]
   ;; (println "coll1: " coll1 ", coll2: " coll2)
-  (loop [nu [], flips 0, elims 0,
+  (loop [nu [], flips 0, elims 0, coef 1,
           c1 coll1, c2 coll2]
     (cond
       (every? empty? [c1 c2])
-        [nu flips elims]
+        [nu flips elims coef]
       (empty? c1)
-        [(into nu c2) flips elims]
+        [(into nu c2) flips elims coef]
       (empty? c2)
-        [(into nu c1) flips elims]
+        [(into nu c1) flips elims coef]
       :else
-        (let [a1 (first c1), ix1 (.indexOf k a1),
-              a2 (first c2), ix2 (.indexOf k a2)]
+        (let [a1 (first c1)
+              a2 (first c2)]
           (cond
-            (= ix1 ix2)
-                (recur nu flips (inc elims)
+            (= a1 a2)
+                (recur nu (+ flips -1 (count c1))
+                  (inc elims) (* coef (get orthonormal-basis a1))
                   (rest c1) (rest c2) )
 
-            (< ix1 ix2)
-                (recur (conj nu a1) flips elims
+            (< (.indexOf k a1) (.indexOf k a2))
+                (recur (conj nu a1) flips
+                  elims coef
                   (rest c1) c2)
 
             :else
-                (recur (conj nu a2) (+ flips (count c1)) elims
+                (recur (conj nu a2) (+ flips -1 (count c1))
+                  elims coef
                   c1 (rest c2)))))))
 
 (defn make-value-entry [[coll1 coll2]]
-  (let [[key flip-count eliminations]
+  (let [[key flip-count eliminations coefficient]
             (measured-merge-sort coll1 coll2)
-        coef (if (odd? flip-count) -1 +1)]
+        coef (* coefficient (if (odd? flip-count) -1 +1))]
     (if (pos? eliminations)
       [[coef key] []]
       [[] [coef key]] )))
