@@ -25,7 +25,7 @@
 (def k5 (make-M k4))
 
 (def cannonical-basis
-  (-> [#{}]
+  (-> [#{}] ;This creates a set
     ;; the empty collection represents a scalar
     (into k1)
     (into k2)
