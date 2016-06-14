@@ -1,4 +1,4 @@
-(ns edu.vu.c3.core )
+(ns edu.vu.c3.core)
 
 (def orthonormal-basis
   "This is the orthonomal basis for the metric with metrics supplied.
@@ -17,7 +17,7 @@
 (defn make-M [kx]
   (apply hash-set
     (for [a k, b kx
-     :when (not (contains? b a))]
+          :when (not (contains? b a))]
      (conj b a))))
 (def k2 (make-M k1))
 (def k3 (make-M k2))
@@ -49,24 +49,24 @@
           c1 coll1, c2 coll2]
     (cond
       (every? empty? [c1 c2])
-        [nu flips elims coef]
+      [nu flips elims coef]
       (empty? c1)
-        [(into nu c2) flips elims coef]
+      [(into nu c2) flips elims coef]
       (empty? c2)
-        [(into nu c1) flips elims coef]
+      [(into nu c1) flips elims coef]
       :else
         (let [a1 (first c1)
               a2 (first c2)]
           (cond
             (= a1 a2)
-                (recur nu (+ flips -1 (count c1))
-                  (inc elims) (* coef (get orthonormal-basis a1))
-                  (rest c1) (rest c2) )
+            (recur nu (+ flips -1 (count c1))
+              (inc elims) (* coef (get orthonormal-basis a1))
+              (rest c1) (rest c2))
 
             (< (.indexOf k a1) (.indexOf k a2))
-                (recur (conj nu a1) flips
-                  elims coef
-                  (rest c1) c2)
+            (recur (conj nu a1) flips
+              elims coef
+              (rest c1) c2)
 
             :else
                 (recur (conj nu a2) (+ flips -1 (count c1))
@@ -75,11 +75,11 @@
 
 (defn make-value-entry [[coll1 coll2]]
   (let [[key flip-count eliminations coefficient]
-            (measured-merge-sort coll1 coll2)
+        (measured-merge-sort coll1 coll2)
         coef (* coefficient (if (odd? flip-count) -1 +1))]
     (if (pos? eliminations)
       [[coef key] []]
-      [[] [coef key]] )))
+      [[] [coef key]])))
 
 (def multiplication-table
   (into {} (map (fn [key] [key (make-value-entry key)]) mtkey)))
